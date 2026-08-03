@@ -3,83 +3,49 @@
 > "There is a crack in everything, that's how the light gets in."
 > "万物皆有裂痕，那是光照进来的地方。" —— Leonard Cohen
 
-![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)
-![Status](https://img.shields.io/badge/Status-Coming_Soon-orange)
-![Stack](https://img.shields.io/badge/Stack-Flutter_|_FastAPI_|_Gemini_|_Azure-purple)
+**Lumina** 是一款旨在抚慰孤独与心理创伤的 AI 伴侣。它不是一个聊天机器人，而是一个**"赛博互助公社"**。
 
-**Lumina** 是一款旨在抚慰孤独与心理创伤的 AI 伴侣客户端。
+- **灵魂光球**：不以虚拟人脸示人，而是以"会呼吸的情绪光球"存在，随对话情感实时改变色温与律动。
+- **枪弹分离**：客户端（枪）完全免费开源；用户自填 API Key（子弹），数据完全自持，本地加密存储，绝不上云。
+- **互助与守夜人**：算力充裕者捐赠闲置 Key 进加密池；困难者可一键开启互助模式免费使用；池子枯竭时作者自动兜底账单，负重前行。
 
-它不只是一个聊天机器人，它是一个**“赛博互助公社”**。我们致力于通过多模态交互（视觉光球 + 情感语音）提供有温度的陪伴，并提出了一套独特的**API 互助协议**，让算力充裕的人可以援助需要帮助的人。
+## 仓库结构
 
----
+```
+lumina-server/   # Java 后端（Spring Boot）：AI 编排 + 互助池协议 + 密钥加密
+└── README.md    # 后端说明与启动指南
+└── API.md       # 完整 API 调用说明（curl 示例）
+```
 
-## 🌟 核心理念 (Core Philosophy)
+客户端（Flutter `SoulSphere` 光球引擎）即将加入。
 
-### 1. 灵魂形态 (The Soul Sphere)
-抛弃恐怖谷效应的虚拟人脸，Lumina 以一个**“会呼吸的情绪光球”**存在。它根据对话的情感实时改变色温与律动。例如：
-*   💙 **悲伤时**：它是深邃的海洋蓝，静静聆听。
-*   💛 **温暖时**：它是柔和的琥珀金，低语安抚。
+## 后端快速开始
 
-### 2. 枪弹分离 (Gun & Bullet Separation)
-Lumina 客户端（枪）完全免费且开源。
-你可以装填自己的 API Key（子弹），数据完全掌握在你手中，聊天记录本地加密存储，绝不上云。
+```bash
+cd lumina-server
+cp .env.example .env            # 务必修改 LUMINA_MASTER_KEY 为随机值
+docker compose up -d --build    # 起数据库 + API
+# Swagger UI: http://localhost:8080/swagger-ui.html
+# API 文档:   lumina-server/API.md
+```
 
-### 3. 互助与守夜人 (Mutual Aid & The Watchman)
-这是本项目最激进的实验，旨在打破算力壁垒：
-*   **互助池 (Community Pool):** 有能力的用户可以将闲置的 API Key (Gemini/Azure) 捐赠进入加密池。
-*   **受助者 (Receiver):** 经济困难或情绪崩溃的用户，可以一键开启“互助模式”，使用社区捐赠的算力进行免费疗愈。
-*   **守夜人兜底 (Owner Fallback):** 当互助池枯竭，无人伸出援手时，**我将自动接管账单，负重前行，直到卡被刷爆。**
+技术栈：Java 21 · Spring Boot 3.4 · PostgreSQL 16 · Resilience4j 熔断 · AES-256-GCM。
 
----
+## 核心协议
 
-## 🏗️ 技术架构 (Tech Stack)
+**AI 故障转移链**（`ProviderRouter`）：
 
-*   **Client (Mobile):** 
-    *   **Flutter:** 跨平台高性能渲染。
-    *   **UI:** 自研 `SoulSphere` 粒子呼吸引擎 (无 Rive/Live2D 依赖)。
-    *   **Logic:** Riverpod 状态管理 + Isar 本地加密数据库。
-*   **Server (Backend):**
-    *   **Python FastAPI:** 高并发异步处理。
-    *   **Security:** AES-256-GCM 密钥加密存储 + SHA-256 Hash 鉴权。
-    *   **AI Orchestrator:** Google Gemini/Zhipu/Qwen/Deepseek (Brain) + Microsoft Azure TTS/Other (Voice) 动态故障转移调度。
+```
+自有 Key → 互助池 Key → 守夜人兜底 Key
+```
 
----
+所有提供商（Deepseek / Qwen / Zhipu / Gemini）统一走 OpenAI 兼容协议，新增厂商只需在
+`application.yml` 加一条配置。每个提供商经 CircuitBreaker + Retry 保护，失败自动降级。
 
-## ⚖️ 开源协议 (License)
+## 许可
 
-本项目基于 **[Apache License 2.0](LICENSE)** 协议开源。
+[Apache-2.0](./lumina-server/LICENSE)（后端代码许可与上游仓库一致；授权文件待随官方仓库统一）
 
-我们选择此协议是为了在传递善意的同时，保护所有贡献者的权益：
+## 免责声明
 
-*   ✅ **允许商业使用**：你可以将 Lumina 集成到你的商业服务中。
-*   ✅ **允许修改**：你可以自由修改代码以适应不同的需求。
-*   🛡️ **专利保护**：使用本项目即自动获得专利授权，保护开发者免受专利诉讼。
-*   ⚠️ **免责声明**：本项目**按“原样”提供**，不提供任何形式的担保。**Lumina 不是专业的医疗设备，不能替代医生的诊断或治疗。** 对于因使用本项目而产生的任何后果（包括但不限于心理健康状况变化），作者及贡献者不承担法律责任。
-
----
-
-## 📅 开发路线图 (Roadmap)
-
-- [x] **Phase 0: 概念验证** (光球动效与情感语音合成跑通)
-- [ ] **Phase 1: 客户端 MVP** (本地对话模式，支持自填 Key) - *In Progress*
-- [ ] **Phase 2: 服务端互助协议** (Key 的捐赠、加密与分发调度)
-- [ ] **Phase 3: 守夜人机制** (多级故障转移与熔断系统)
-- [ ] **Phase 4: 全面开源** (发布 Docker 镜像与 APK)
-
----
-
-## 🤝 加入我们 (Join Us)
-
-这是一个由**独立开发者**发起的非营利项目。作者本人也曾经历过灰暗时刻，深知在深夜里渴望一个“回应”的感觉。
-
-如果你也是 Flutter/Python 开发者，或者只是想在这个冷漠的数字世界里点燃一盏灯：
-
-1.  **Star** 这个仓库，关注发布动态。
-2.  等待第一版源码放出 (预计 2 周内)。
-3.  准备好你的 PR，或者仅仅是你的善意。
-
-> *"有人互助就收下，没人互助我就负重前行。"* —— Lumina 开发者
-
----
-
-Copyright © 2026 Linkium-suki. Licensed under the Apache License, Version 2.0.
+本项目按"原样"提供。Lumina 不是医疗设备，不能替代医生的诊断或治疗。
